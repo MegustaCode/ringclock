@@ -1,7 +1,8 @@
 import time
-import ringclock_animation as rca
 from datetime import datetime as dt
 from ringclock_time import RingClockTime as rct
+import ringclock_animation as rca
+import ringclock_mixer as rcm
 
 from neopixel import *
 
@@ -35,7 +36,7 @@ class RingClock():
             self._clock_tick()
             time_end = time.time()
             time_delta = time_end - time_start
-            #time.sleep(0.01)
+            time.sleep(0.01)
             print 'tick duration: ' + str(time_delta)
             #print time_start
             #print time_end
@@ -58,15 +59,15 @@ class RingClock():
     # check if a handle has changed and create an animation
     def _check_animation_required(self,time):
         if (time['s'] != self.time_on_display['s']):
-            self.animation_list.append(rca.RingClockAnimations('fade',time['s'],'seconds'))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',time['s'],'seconds'))
             # now store the current time as displayed time
             self.time_on_display['s'] = time['s']
         if (time['m'] != self.time_on_display['m']):
-            self.animation_list.append(rca.RingClockAnimations('fade',time['m'],'minutes'))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',time['m'],'minutes'))
             # now store the current time as displayed time
             self.time_on_display['m'] = time['m']
         if (time['h'] != self.time_on_display['h']):
-            self.animation_list.append(rca.RingClockAnimations('fade',time['h']*5,'hours'))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',time['h']*5,'hours'))
             # now store the current time as displayed time
             self.time_on_display['h'] = time['h']
         
@@ -76,14 +77,14 @@ class RingClock():
         brightness = animation_obj.calculate_brightness()
         # get the pixel to animate
         pixel = animation_obj.get_pixel()
-        print 'setting brightness '+str(brightness)+' to pixel no. '+str(pixel)
+        #print 'setting brightness '+str(brightness)+' to pixel no. '+str(pixel)
         # get the color of the animation
         colors = animation_obj.get_colors()
         red = int(colors['red']*brightness)
         green = int(colors['green']*brightness)
         blue = int(colors['blue']*brightness)
         # set color
-        self.strip.setPixelColorRGB(pixel,red,green,blue)
+        self._mixer.add_color(pixel,red,green,blue)
     
     # process animations
     def _process_animations(self,time):
@@ -97,17 +98,20 @@ class RingClock():
         # now delete non valid items
         for index in sorted(delete_buffer, reverse=True):
             del self.animation_list[index]
-        print 'animation list length: '+str(len(self.animation_list))
+        #print 'animation list length: '+str(len(self.animation_list))
         
     # the actual clock tick function
     def _clock_tick(self):
+        # create mixer instance
+        self._mixer = rcm.RingClockMixer(self.strip,self.LED_BRIGHTNESS)
         #get the current time
         current_time = rct.get_time()
         #print time_current['h'], time_current['m'], time_current['s'], time_current['ms']
-        #self.clear_pixel_buffer()
-        #self.set_pixels(time_current)
         self._check_animation_required(current_time)
         self._process_animations(current_time)
+        # calculate the colors
+        self._mixer.mix_colors()
+        # now show colors
         self.strip.show()
 
 
