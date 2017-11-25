@@ -149,11 +149,11 @@ class RingClockAnimations(RingClockAnimationPrototype):
             green = 0
             blue  = 0
             if type_string is 'simple':
-                hold_period = 1
+                hold_period = 1 + delay
             elif type_string is 'fade':
-                hold_period = 0.5
+                hold_period = 0.5 + delay
             elif type_string is 'fade_exp':
-                hold_period = 0.5
+                hold_period = 0.5 + delay
             else:
                 raise ValueError('unknown animation')
         elif hand is 'minutes':

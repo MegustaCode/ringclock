@@ -28,8 +28,36 @@ class RingClock():
         self.time_on_display = rct.create_time(None,None,None,None)
         # create empty animation list
         self.animation_list = list()
+        # init clock display
+        self._init_clock()
+        print 'clock initialized'
+    
+    def _create_initial_animation(self,time):
+        # create hands with delay
+        self._create_hand(time['s'],'seconds')
+        self._create_hand(time['m'],'minutes',(-time['s']))
+        self._create_hand(time['h'],'hours',-(time['s']+time['m']*60))
+        # now store the current time as displayed time
+        self.time_on_display['h'] = time['h']
+        self.time_on_display['m'] = time['m']
+        self.time_on_display['s'] = time['s']
+    
+    # initializes the first animations
+    def _init_clock(self):
+        # create mixer instance
+        self._create_mixer()
+        #get the current time
+        current_time = rct.get_time()
+        # creat first animation
+        self._create_initial_animation(current_time)
+        self._process_animations(current_time)
+        # calculate the colors
+        self._mixer.mix_colors()
+        # now show colors
+        self.strip.show()
         
-    def start_clock(self):
+        
+    def run_clock(self):
         print ('start clock')
         while (True):
             time_start = time.time()
@@ -112,11 +140,14 @@ class RingClock():
         for index in sorted(delete_buffer, reverse=True):
             del self.animation_list[index]
         #print 'animation list length: '+str(len(self.animation_list))
-        
+    
+    def _create_mixer(self):
+        self._mixer = rcm.RingClockMixer(self.strip,self.LED_BRIGHTNESS)
+    
     # the actual clock tick function
     def _clock_tick(self):
         # create mixer instance
-        self._mixer = rcm.RingClockMixer(self.strip,self.LED_BRIGHTNESS)
+        self._create_mixer()
         #get the current time
         current_time = rct.get_time()
         #print time_current['h'], time_current['m'], time_current['s'], time_current['ms']
@@ -132,7 +163,7 @@ class RingClock():
 if __name__ == '__main__':
     foo = RingClock()
     # start and run forever
-    foo.start_clock()
+    foo.run_clock()
     # safety
     del foo
     
