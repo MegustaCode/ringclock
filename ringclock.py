@@ -36,7 +36,7 @@ class RingClock():
             self._clock_tick()
             time_end = time.time()
             time_delta = time_end - time_start
-            time.sleep(0.01)
+            time.sleep(0.005)
             print 'tick duration: ' + str(time_delta)
             #print time_start
             #print time_end
@@ -56,18 +56,31 @@ class RingClock():
         #self.strip.setPixelColorRGB(int(time['ms']/16.7),0,0,255)
         pass
 
+    # creates a hand depending on type
+    def _create_hand(self,pixel,hand_type,delay=0):
+        if hand_type is 'seconds':
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel,'seconds',delay))
+        elif hand_type is 'minutes':
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel,'minutes',delay))
+        elif hand_type is 'hours':
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel*5,'hours',delay))
+        else:
+            raise ValueError('unknown hand')
+            
+    
+    
     # check if a handle has changed and create an animation
     def _check_animation_required(self,time):
         if (time['s'] != self.time_on_display['s']):
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',time['s'],'seconds'))
+            self._create_hand(time['s'],'seconds')
             # now store the current time as displayed time
             self.time_on_display['s'] = time['s']
         if (time['m'] != self.time_on_display['m']):
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',time['m'],'minutes'))
+            self._create_hand(time['m'],'minutes')
             # now store the current time as displayed time
             self.time_on_display['m'] = time['m']
         if (time['h'] != self.time_on_display['h']):
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',time['h']*5,'hours'))
+            self._create_hand(time['h'],'hours')
             # now store the current time as displayed time
             self.time_on_display['h'] = time['h']
         

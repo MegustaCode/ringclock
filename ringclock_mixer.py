@@ -29,7 +29,10 @@ class RingClockMixer():
             red   = self._truncate_channel(sum(self._data[pixel]['r']))
             green = self._truncate_channel(sum(self._data[pixel]['g']))
             blue  = self._truncate_channel(sum(self._data[pixel]['b']))
+            print '# ' +str(pixel)+'|'+str(red)+'|'+str(green)+'|'+str(blue)
             self._strip.setPixelColorRGB(pixel,red,green,blue)
+            
+                                         
     
     # show the colors
     #def show_colors(self):

@@ -143,7 +143,7 @@ class RingClockAnimationPrototype():
                 
 class RingClockAnimations(RingClockAnimationPrototype):
     
-    def __init__(self,type_string,pixel,hand):
+    def __init__(self,type_string,pixel,hand,delay=0):
         if hand is 'seconds':
             red   = 1
             green = 0
@@ -160,12 +160,12 @@ class RingClockAnimations(RingClockAnimationPrototype):
             red   = 0
             green = 1
             blue  = 0
-            hold_period = 60
+            hold_period = 60 + delay
         elif hand is 'hours':
             red   = 0
             green = 0
             blue  = 1
-            hold_period = 3600
+            hold_period = 3600 + delay
         else:
             raise ValueError('unknown hand')
             
