@@ -174,6 +174,6 @@ class RingClockAnimations(RingClockAnimationPrototype):
         elif type_string is 'fade':
             RingClockAnimationPrototype.__init__(self,type_string,pixel,0.5,hold_period,0.4,red,green,blue)
         elif type_string is 'fade_exp':
-            RingClockAnimationPrototype.__init__(self,type_string,pixel,0.5,hold_period,2,red,green,blue)
+            RingClockAnimationPrototype.__init__(self,type_string,pixel,0.5,hold_period,1.3,red,green,blue)
         else:
             raise ValueError('unknown animation')
