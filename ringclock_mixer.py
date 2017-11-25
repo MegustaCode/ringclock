@@ -5,7 +5,7 @@ class RingClockMixer():
         self._data     = {}
         self._strip    = led_strip
         self._MAX_BRIGHTNESS = max_brightness
-        self._mix_type = 'average' 
+        self._mix_type = 'sum' 
     
     # helper function to truncate channel if it is bigger than max brightness
     def _truncate_channel(self,value):
