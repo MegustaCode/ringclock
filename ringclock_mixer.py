@@ -37,7 +37,7 @@ class RingClockMixer():
                 blue  = sum(self._data[pixel]['b'])/len(self._data[pixel]['b'])
             else:
                 raise ValueError('unknown mixing type')
-            print '# ' +str(pixel)+'|'+str(red)+'|'+str(green)+'|'+str(blue)
+            #print '# ' +str(pixel)+'|'+str(red)+'|'+str(green)+'|'+str(blue)
             self._strip.setPixelColorRGB(pixel,red,green,blue)
             
                                          

@@ -18,7 +18,21 @@ class RingClockWork():
         self.animation_list = list()
         # init clock display
         self._init_clock()
+        # set clock running flag
+        self._is_running = True
         print 'clockwork initialized'
+        
+    # shutdown clock
+    def _shutdown(self):
+        self.clear_pixel_buffer()
+        
+    # get clock state
+    def get_clock_state(self):
+        return self._is_running
+        
+    # set clock state
+    def set_clock_state(self,state):
+        self._is_running = state
     
     def _create_initial_animation(self,time):
         # create hands with delay
@@ -47,22 +61,25 @@ class RingClockWork():
         
     def run_clock(self):
         print ('start clock')
-        while (True):
+        while (self._is_running):
             time_start = time.time()
             self._clock_tick()
             time_end = time.time()
             time_delta = time_end - time_start
             time.sleep(0.005)
-            print 'tick duration: ' + str(time_delta)
+            #print 'tick duration: ' + str(time_delta)
             #print time_start
             #print time_end
-            print '-------------------------'
+            #print '-------------------------'
+        self._shutdown()
+        print 'clock shutdown'
             
 
     # clear all pixel data without showing
     def clear_pixel_buffer(self):
         for i in range(self.led.COUNT):
             self.led.strip.setPixelColorRGB(i,0,0,0)
+        self.led.strip.show()
 
     # set the color values of pixels
     def _set_pixels(self,time):
