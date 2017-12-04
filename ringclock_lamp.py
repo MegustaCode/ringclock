@@ -13,7 +13,8 @@ class RingClockLamp():
         self._last_button = 'ON'
         self._button_active = False
         self.mixer  = rcm.RingClockMixer(self.led.strip)
-        self.brightness = self.led.BRIGHTNESS
+        self._brightness = self.led.BRIGHTNESS
+        self._stepsize = 50
         
         print 'lamp initialized'
         
@@ -27,6 +28,20 @@ class RingClockLamp():
         self._last_button = button
         self._button_active = True
         
+    def _claclulate_brightness(self):
+        # increase/deacrease brightness
+        if self._last_button is 'BRIGHT_UP':
+            self._brightness += self._stepsize
+            print 'increasing brightness'
+        else:
+            self._brightness -= self._stepsize
+            print 'decreasing brightness'
+        # fix if value is too high/low
+        if self._brightness > self.led.BRIGHTNESS:
+            self._brightness = self.led.BRIGHTNESS
+        elif self._brightness < 0:
+            self._brightness = 0
+        
     def _handle_button(self):
         if self._last_button is 'ON':
             pass
@@ -34,9 +49,9 @@ class RingClockLamp():
             self._mode = 'OFF'
             pass
         elif self._last_button is 'BRIGHT_UP':
-            pass
+            self._claclulate_brightness()
         elif self._last_button is 'BRIGHT_DOWN':
-            pass
+            self._claclulate_brightness()
         elif self._last_button is 'FLASH':
             pass
         elif self._last_button is 'STROBE':
@@ -55,6 +70,7 @@ class RingClockLamp():
             if self._button_active:
                 self._handle_button()
                 self._button_active = False
+                print 'button pushed: {}'.format(self._last_button)
             # handle modes
             if self._mode is 'COLOR':
                 self._mode_color()
@@ -66,16 +82,16 @@ class RingClockLamp():
         self.mixer.clear_data()
         if self._color is 'RED':
             for pixel in range(self.led.COUNT):
-                self.mixer.add_color(pixel,255,0,0)
+                self.mixer.add_color(pixel,self._brightness,0,0)
         elif self._color is 'GREEN':
             for pixel in range(self.led.COUNT):
-                self.mixer.add_color(pixel,0,255,0)
+                self.mixer.add_color(pixel,0,self._brightness,0)
         elif self._color is 'BLUE':
             for pixel in range(self.led.COUNT):
-                self.mixer.add_color(pixel,0,0,255)
+                self.mixer.add_color(pixel,0,0,self._brightness)
         elif self._color is 'WHITE':
             for pixel in range(self.led.COUNT):
-                self.mixer.add_color(pixel,255,255,255)
+                self.mixer.add_color(pixel,self._brightness,self._brightness,self._brightness)
         
         self.mixer.mix_colors()    
         self.led.strip.show()
