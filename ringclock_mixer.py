@@ -46,5 +46,11 @@ class RingClockMixer():
                                          
     
     # show the colors
-    #def show_colors(self):
-    #    self._strip.show()
+    def show_colors(self):
+        self._strip.show()
+        
+    # clear display
+    def clear_display(self):
+        for item in range(self_strip.COUNT):
+            self._strip.setPixelColorRGB(item,0,0,0)
+        self.show_colors()
