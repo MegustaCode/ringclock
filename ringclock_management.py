@@ -33,8 +33,10 @@ class RingClockManagement():
         elif name is None:
             print 'unknown button'
         else:
-            self.lamp.set_last_button(name)
-
+            try:
+                self.lamp.set_last_button(name)
+            except AttributeError:
+                print 'button {} pushed without lamp being activated'.format(name)
         
 # Main
 if __name__ == '__main__':
