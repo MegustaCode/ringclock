@@ -40,6 +40,9 @@ class RingClockMixer():
             #print '# ' +str(pixel)+'|'+str(red)+'|'+str(green)+'|'+str(blue)
             self._strip.setPixelColorRGB(pixel,red,green,blue)
             
+    def clear_data(self):
+        self._data = {}
+            
                                          
     
     # show the colors
