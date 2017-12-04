@@ -30,6 +30,8 @@ class RingClockManagement():
         elif name is 'OFF':
             self.state = 'CLOCK'
             self.lamp.set_last_button('OFF')
+        elif name is None:
+            print 'unknown button'
         else:
             self.lamp.set_last_button(name)
 
