@@ -3,7 +3,7 @@ from neopixel import *
 
 class RingClockLEDBase():
     # LED strip configuration:
-    COUNT      = 60      # Number of LED pixels.
+    COUNT      = 96      # Number of LED pixels.
     PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
     #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
     FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
