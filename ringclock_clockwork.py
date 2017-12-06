@@ -10,6 +10,10 @@ class RingClockWork():
 
 
     def __init__(self):
+        # set ring sizes
+        self._RING_OUT = 60
+        self._RING_MID = 24
+        self._RING_IN  = 12
         # init LEDs
         self.led = rclb.RingClockLEDBase()
         # store the first time
@@ -92,7 +96,8 @@ class RingClockWork():
         elif hand_type is 'minutes':
             self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel,'minutes',delay))
         elif hand_type is 'hours':
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel*5,'hours',delay))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',(pixel*2)+self._RING_OUT,'hours',delay))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel+self._RING_OUT+self._RING_MID,'hours',delay))
         else:
             raise ValueError('unknown hand')
             
