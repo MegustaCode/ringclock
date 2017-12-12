@@ -14,6 +14,8 @@ class RingClockWork():
         self._RING_OUT = 60
         self._RING_MID = 24
         self._RING_IN  = 12
+        #init clock mode (CLASSIC/FILL)
+        self._clock_mode = 'FILL'
         # init LEDs
         self.led = rclb.RingClockLEDBase()
         # store the first time
@@ -39,10 +41,21 @@ class RingClockWork():
         self._is_running = state
     
     def _create_initial_animation(self,time):
-        # create hands with delay
-        self._create_hand(time['s'],'seconds')
-        self._create_hand(time['m'],'minutes',(-time['s']))
-        self._create_hand(time['h'],'hours',-(time['s']+time['m']*60))
+        # create hands with delay, depending on clock mode
+        if self._clock_mode is 'CLASSIC':
+            self._create_hand(time['s'],'seconds')
+            self._create_hand(time['m'],'minutes',(-time['s']))
+            self._create_hand(time['h'],'hours',-(time['s']+time['m']*60))
+        elif self._clock_mode is 'FILL':
+            time_left_minutes = 3600 -(time['s']+time['m']*60) - 60
+            time_left_hours   = 86400-(time['s']+time['m']*60+time['h']*3600)
+            self._create_hand(time['s'],'seconds')
+            for item in range(time['m']):
+                self._create_hand(item,'minutes',time_left_minutes)
+            for item in range(time['h']):
+                self._create_hand(item,'hours',time_left_hours)
+        else:
+            raise ValueError('unknown clock mode')
         # now store the current time as displayed time
         self.time_on_display['h'] = time['h']
         self.time_on_display['m'] = time['m']
@@ -74,7 +87,8 @@ class RingClockWork():
             #print 'tick duration: ' + str(time_delta)
             #print time_start
             #print time_end
-            #print '-------------------------'
+            print '{}:{}:{}'.format(self.time_on_display['h'],self.time_on_display['m'],self.time_on_display['s'])
+            print '-------------------------'
         self._shutdown()
         print 'clock shutdown'
             
@@ -96,8 +110,10 @@ class RingClockWork():
         elif hand_type is 'minutes':
             self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel,'minutes',delay))
         elif hand_type is 'hours':
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',(pixel*2)+self._RING_OUT,'hours',delay))
             self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel+self._RING_OUT+self._RING_MID,'hours',delay))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',(pixel*2)+self._RING_OUT,'hours',delay))
+            if self._clock_mode is 'FILL':
+                self.animation_list.append(rca.RingClockAnimations('fade_exp',(pixel*2)+self._RING_OUT-1,'hours',delay))
         else:
             raise ValueError('unknown hand')
             

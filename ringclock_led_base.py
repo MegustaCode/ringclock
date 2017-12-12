@@ -8,7 +8,7 @@ class RingClockLEDBase():
     #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
     FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
     DMA        = 5       # DMA channel to use for generating signal (try 5)
-    BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
+    BRIGHTNESS = 125     # Set to 0 for darkest and 255 for brightest
     INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
     CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
     STRIP      = ws.WS2811_STRIP_GRB   # Strip type and colour ordering
