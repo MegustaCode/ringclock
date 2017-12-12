@@ -4,9 +4,9 @@ import ringclock_led_base as rclb
 
 class RingClockLamp():
     
-    def __init__(self):
+    def __init__(self,led=rclb.RingClockLEDBase()):
         # init LEDs
-        self.led = rclb.RingClockLEDBase()
+        self.led = led
         
         self._mode  = 'COLOR'
         self._color = 'RED'
@@ -77,6 +77,25 @@ class RingClockLamp():
             if self._mode is 'OFF':
                 print 'shutting down lamp'
                 break
+                
+    def _mode_strobe(self):
+        # init colors
+        red   = 0
+        green = 0
+        blue  = 0
+        self.mixer.clear_data()
+        # get color
+        if self._color is 'RED':
+            red = self.led.BRIGHTNESS
+        elif self._color is 'GREEN':
+            green = self.led.BRIGHTNESS
+        elif self._color is 'BLUE':
+            blue = self.led.BRIGHTNESS
+        elif self._color is 'WHITE':
+            red   = self.led.BRIGHTNESS
+            green = self.led.BRIGHTNESS
+            blue  = self.led.BRIGHTNESS
+            
     
     def _mode_color(self):
         self.mixer.clear_data()

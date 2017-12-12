@@ -1,24 +1,59 @@
-import ringclock_clockwork as rcw
-import ringclock_ir_sensor as rcir
-import ringclock_lamp      as rcl
+import ringclock_clockwork    as rcw
+import ringclock_ir_sensor    as rcir
+import ringclock_lamp         as rcl
+import ringclock_helpers      as rch
+import ringclock_light_sensor as rcls
+import ringclock_led_base     as rclb
 import pigpio
 
 class RingClockManagement():
     
     PIN_IR_SENSOR = 17
+    MAX_DYNAMIC_BRIGHTNESS = 255.0
+    MIN_DYNAMIC_BRIGHTNESS = 50
+    MAX_LUX = 10000
+    MIN_LUX = 10
+    BRIGHTNESS_COEFFICIENT = (MIN_DYNAMIC_BRIGHTNESS-MAX_DYNAMIC_BRIGHTNESS)/(MAX_LUX-MIN_LUX)
+    LIGHT_SENSOR_PERIOD = 5
+    
 
     def __init__(self):
+        # inits LEDs
+        self.led = rclb.RingClockLEDBase()
         # init pigpio
         self.gpio = pigpio.pi()
         # init IR sensor
         self.ir = rcir.hasher(self.gpio, self.PIN_IR_SENSOR, self._callback_hasher, 5)
         # set state
         self.state = 'CLOCK'
+        # init light sensor
+        self.light_sensor = rcls.RingClockLightSensor()
+        # init thread which periodically reads light sensor
+        self.light_sensor_thread = rch.PeriodicThread(self._light_sensor_callback,self.LIGHT_SENSOR_PERIOD)
+        self.light_sensor_thread.start()
         print 'management initialized'
         
         
     def init_clockwork(self):
         return rcw.RingClockWork()
+    
+    # callback function of the light sensor thread
+    def _light_sensor_callback(self):
+        value = self.light_sensor.get_luminosity()
+        new_brightness = int(self._calculate_brightness(value))
+        self.led.set_brightness(new_brightness)
+        print 'current lux: {} brightness {}'.format(value,new_brightness)
+        
+    # calculate the brightness depending on lux level
+    def _calculate_brightness(self,lux):
+        print self.BRIGHTNESS_COEFFICIENT
+        if lux > self.MAX_LUX:
+            return self.MIN_DYNAMIC_BRIGHTNESS
+        elif lux < self.MIN_LUX:
+            return self.MAX_DYNAMIC_BRIGHTNESS
+        else:
+            return self.BRIGHTNESS_COEFFICIENT*lux+self.MAX_DYNAMIC_BRIGHTNESS
+            
     
     def _callback_hasher(self,hash):
         hash_found, name = self.ir.find_in_hashtable(hash)

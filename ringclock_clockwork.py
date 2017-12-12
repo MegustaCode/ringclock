@@ -9,7 +9,7 @@ import ringclock_led_base as rclb
 class RingClockWork():
 
 
-    def __init__(self):
+    def __init__(self,led=rclb.RingClockLEDBase()):
         # set ring sizes
         self._RING_OUT = 60
         self._RING_MID = 24
@@ -17,7 +17,7 @@ class RingClockWork():
         #init clock mode (CLASSIC/FILL)
         self._clock_mode = 'FILL'
         # init LEDs
-        self.led = rclb.RingClockLEDBase()
+        self.led = led
         # store the first time
         self.time_on_display = rct.create_time(None,None,None,None)
         # create empty animation list
