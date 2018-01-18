@@ -45,11 +45,10 @@ class RingClockManagement():
         value = self.light_sensor.get_luminosity()
         new_brightness = int(self._calculate_brightness(value))
         self.led.set_brightness(new_brightness)
-        print 'current lux: {} brightness {}'.format(value,new_brightness)
+        print 'current lux: {}, new brightness set to {}'.format(value,new_brightness)
         
     # calculate the brightness depending on lux level
     def _calculate_brightness(self,lux):
-        print self.BRIGHTNESS_COEFFICIENT
         if lux > self.MAX_LUX:
             return self.MIN_DYNAMIC_BRIGHTNESS
         elif lux < self.MIN_LUX:
