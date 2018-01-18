@@ -45,6 +45,14 @@ class RingClockWork():
     # set clock state
     def set_clock_state(self,state):
         self._is_running = state
+        
+    # calculates the duration delta a hand needs to be displayed, before it can be deleted after a new hour
+    @staticmethod
+    def _calculate_hand_duration_delta(hours,minutes,seconds):
+        delta_minutes = 3600 -(seconds+minutes*60) - 60
+        delta_hours   = 86400-(seconds+minutes*60+hours*3600)
+        print delta_hours, delta_minutes
+        return delta_hours,delta_minutes
     
     def _create_initial_animation(self,time):
         # create hands with delay, depending on clock mode
@@ -53,13 +61,11 @@ class RingClockWork():
             self._create_hand(time['m'],'minutes',(-time['s']))
             self._create_hand(time['h'],'hours',-(time['s']+time['m']*60))
         elif self._clock_mode is 'FILL':
-            time_left_minutes = 3600 -(time['s']+time['m']*60) - 60
-            time_left_hours   = 86400-(time['s']+time['m']*60+time['h']*3600)
             self._create_hand(time['s'],'seconds')
-            for item in range(time['m']):
-                self._create_hand(item,'minutes',time_left_minutes)
-            for item in range(time['h']):
-                self._create_hand(item,'hours',time_left_hours)
+            for item in range(1,time['m']+1):
+                self._create_hand(item,'minutes',self._calculate_hand_duration_delta(time['h'],time['m'],time['s'])[1])
+            for item in range(1,time['h']+1):
+                self._create_hand(item,'hours',self._calculate_hand_duration_delta(time['h'],time['m'],time['s'])[0])
         else:
             raise ValueError('unknown clock mode')
         # now store the current time as displayed time
@@ -143,17 +149,19 @@ class RingClockWork():
         elif hand_type is 'hours':
             # calculate position with respect to ring position, becasue ring positions 0 are not aligned
             if (time==12) or (time==0):
-                position_mid = self._RING_OUT+self._RING_MID-1
-                position_in  = self._RING_OUT+self._RING_MID+self._RING_IN-1
+                position_mid      = self._RING_OUT+self._RING_MID-1
+                position_mid_fill = self._RING_OUT
+                position_in       = self._RING_OUT+self._RING_MID+self._RING_IN-1
             else:
-                position_mid = (time*2)+self._RING_OUT-1
-                position_in  = time+self._RING_OUT+self._RING_MID-1
+                position_mid      = (time*2)+self._RING_OUT-1
+                position_mid_fill = position_mid +1
+                position_in       = time+self._RING_OUT+self._RING_MID-1
             # create hand
             self.animation_list.append(rca.RingClockAnimations('fade_exp',position_in,'hours',delay))
             self.animation_list.append(rca.RingClockAnimations('fade_exp',position_mid,'hours',delay))
+            # add the filler between the mid ring hands
             if self._clock_mode is 'FILL':
-                position_mid = (time*2)+self._RING_OUT
-                self.animation_list.append(rca.RingClockAnimations('fade_exp',position_mid,'hours',delay))
+                self.animation_list.append(rca.RingClockAnimations('fade_exp',position_mid_fill,'hours',delay))
         else:
             raise ValueError('unknown hand')
             
@@ -166,11 +174,19 @@ class RingClockWork():
             # now store the current time as displayed time
             self.time_on_display['s'] = time['s']
         if (time['m'] != self.time_on_display['m']):
-            self._create_hand(time['m'],'minutes')
+            # if FILL mode is active, add delay for hand to be visibale after a minute
+            if self._clock_mode is 'FILL':
+                self._create_hand(time['m'],'minutes',self._calculate_hand_duration_delta(time['h'],time['m'],time['s'])[1])
+            else:
+                self._create_hand(time['m'],'minutes')
             # now store the current time as displayed time
             self.time_on_display['m'] = time['m']
         if (time['h'] != self.time_on_display['h']):
-            self._create_hand(time['h'],'hours')
+            # if FILL mode is active, add delay for hand to be visibale after a minute
+            if self._clock_mode is 'FILL':
+                self._create_hand(time['h'],'hours',self._calculate_hand_duration_delta(time['h'],time['m'],time['s'])[0])
+            else:
+                self._create_hand(time['h'],'hours')
             # now store the current time as displayed time
             self.time_on_display['h'] = time['h']
         
