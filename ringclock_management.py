@@ -4,6 +4,7 @@ import ringclock_lamp         as rcl
 import ringclock_helpers      as rch
 import ringclock_light_sensor as rcls
 import ringclock_led_base     as rclb
+import ringclock_time         as rct
 import pigpio
 
 class RingClockManagement():
@@ -35,6 +36,8 @@ class RingClockManagement():
         
         
     def init_clockwork(self):
+        #time = rct.RingClockTime.create_time(3,15,0,0)
+        #return rcw.RingClockWork(static_time=time)
         return rcw.RingClockWork()
     
     # callback function of the light sensor thread

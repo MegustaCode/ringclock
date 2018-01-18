@@ -9,15 +9,17 @@ import ringclock_led_base as rclb
 class RingClockWork():
 
 
-    def __init__(self,led=rclb.RingClockLEDBase()):
+    def __init__(self,led=rclb.RingClockLEDBase(),static_time=None):
         # set ring sizes
         self._RING_OUT = 60
         self._RING_MID = 24
         self._RING_IN  = 12
         #init clock mode (CLASSIC/FILL)
-        self._clock_mode = 'FILL'
+        self._clock_mode = 'CLASSIC'
         # init LEDs
         self.led = led
+        # store static time
+        self.static_time = static_time
         # store the first time
         self.time_on_display = rct.create_time(None,None,None,None)
         # create empty animation list
@@ -65,8 +67,11 @@ class RingClockWork():
     def _init_clock(self):
         # create mixer instance
         self._create_mixer()
-        #get the current time
-        current_time = rct.get_time()
+        #get the current time, if it is non static
+        if self.static_time is None:
+            current_time = rct.get_time()
+        else:
+            current_time = self.static_time
         # creat first animation
         self._create_initial_animation(current_time)
         self._process_animations(current_time)
@@ -170,8 +175,11 @@ class RingClockWork():
     def _clock_tick(self):
         # create mixer instance
         self._create_mixer()
-        #get the current time
-        current_time = rct.get_time()
+        #get the current time, if it is non static
+        if self.static_time is None:
+            current_time = rct.get_time()
+        else:
+            current_time = self.static_time
         #print time_current['h'], time_current['m'], time_current['s'], time_current['ms']
         self._check_animation_required(current_time)
         self._process_animations(current_time)
