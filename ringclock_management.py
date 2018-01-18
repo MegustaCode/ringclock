@@ -14,6 +14,7 @@ class RingClockManagement():
     MIN_DYNAMIC_BRIGHTNESS = 50
     MAX_LUX = 10000
     MIN_LUX = 10
+    # TODO: create non-linear brightness curve
     BRIGHTNESS_COEFFICIENT = (MIN_DYNAMIC_BRIGHTNESS-MAX_DYNAMIC_BRIGHTNESS)/(MAX_LUX-MIN_LUX)
     LIGHT_SENSOR_PERIOD = 1
     
