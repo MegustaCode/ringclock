@@ -15,7 +15,7 @@ class RingClockWork():
         self._RING_MID = 24
         self._RING_IN  = 12
         #init clock mode (CLASSIC/FILL)
-        self._clock_mode = 'CLASSIC'
+        self._clock_mode = 'FILL'
         # init LEDs
         self.led = led
         # store static time
