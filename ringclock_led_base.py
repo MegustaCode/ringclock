@@ -9,7 +9,6 @@ class RingClockLEDBase():
     FREQ_HZ        = 800000  # LED signal frequency in hertz (usually 800khz)
     DMA            = 5       # DMA channel to use for generating signal (try 5)
     BRIGHTNESS     = 125     # 0 to 255, is set and passed through modules
-    MAX_BRIGHTNESS = 255     # the technical maximum brightness
     INVERT         = False   # True to invert the signal (when using NPN transistor level shift)
     CHANNEL        = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
     STRIP          = ws.WS2811_STRIP_GRB   # Strip type and colour ordering
@@ -25,4 +24,4 @@ class RingClockLEDBase():
         self.BRIGHTNESS = value
         
     def get_brightness(self):
-        return self.BRIGHNTESS
+        return self.BRIGHTNESS

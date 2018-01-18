@@ -9,7 +9,7 @@ import ringclock_led_base as rclb
 class RingClockWork():
 
 
-    def __init__(self,led=rclb.RingClockLEDBase(),static_time=None):
+    def __init__(self,led,static_time=None):
         # set ring sizes
         self._RING_OUT = 60
         self._RING_MID = 24
@@ -178,7 +178,7 @@ class RingClockWork():
         #print 'animation list length: '+str(len(self.animation_list))
     
     def _create_mixer(self):
-        self._mixer = rcm.RingClockMixer(self.led.strip,self.led.BRIGHTNESS)
+        self._mixer = rcm.RingClockMixer(self.led.strip,self.led)
     
     # the actual clock tick function
     def _clock_tick(self):

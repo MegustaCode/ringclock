@@ -38,7 +38,7 @@ class RingClockManagement():
     def init_clockwork(self):
         #time = rct.RingClockTime.create_time(3,15,0,0)
         #return rcw.RingClockWork(static_time=time)
-        return rcw.RingClockWork()
+        return rcw.RingClockWork(led=self.led)
     
     # callback function of the light sensor thread
     def _light_sensor_callback(self):

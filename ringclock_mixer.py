@@ -1,16 +1,20 @@
 from neopixel import *
 class RingClockMixer():
     
-    def __init__(self,led_strip,max_brightness=255):
+    def __init__(self,led_strip_obj,led_obj):
         self._data     = {}
-        self._strip    = led_strip
-        self._MAX_BRIGHTNESS = max_brightness
+        self._strip    = led_strip_obj
+        self._led      = led_obj
         self._mix_type = 'sum' 
+        
+    # get the curretn max brighntess from the LED object
+    def _get_max_brightness(self):
+        return self._led.get_brightness()
     
     # helper function to truncate channel if it is bigger than max brightness
     def _truncate_channel(self,value):
-        if value > self._MAX_BRIGHTNESS:
-            return self._MAX_BRIGHTNESS
+        if value > self._get_max_brightness():
+            return self._get_max_brightness()
         else:
             return value
     
