@@ -10,7 +10,7 @@ import pigpio
 class RingClockManagement():
     
     PIN_IR_SENSOR = 17
-    MAX_DYNAMIC_BRIGHTNESS = 255.0
+    MAX_DYNAMIC_BRIGHTNESS = 200.0
     MIN_DYNAMIC_BRIGHTNESS = 50
     MAX_LUX = 10000
     MIN_LUX = 10
