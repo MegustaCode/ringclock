@@ -37,7 +37,7 @@ class RingClockManagement():
         
         
     def init_clockwork(self):
-        #time = rct.RingClockTime.create_time(3,15,0,0)
+        #time = rct.RingClockTime.create_time(11,59,0,0)
         #return rcw.RingClockWork(static_time=time)
         return rcw.RingClockWork(led=self.led)
     

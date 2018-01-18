@@ -101,7 +101,7 @@ class RingClockWork():
             # store tick duration
             self._store_tick_time(time.time() - time_start)
             # sleep
-            time.sleep(0.005)
+            #time.sleep(0.005)
             # print information
             self._print_information()
         self._shutdown()
