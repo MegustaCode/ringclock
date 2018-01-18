@@ -14,6 +14,8 @@ class RingClockWork():
         self._RING_OUT = 60
         self._RING_MID = 24
         self._RING_IN  = 12
+        # init tick time list
+        self._tick_times = list()
         #init clock mode (CLASSIC/FILL)
         self._clock_mode = 'FILL'
         # init LEDs
@@ -84,19 +86,32 @@ class RingClockWork():
     def run_clock(self):
         print ('start clock')
         while (self._is_running):
+            # store time of beginning of tick
             time_start = time.time()
+            # do clock tick
             self._clock_tick()
-            time_end = time.time()
-            time_delta = time_end - time_start
+            # store tick duration
+            self._store_tick_time(time.time() - time_start)
+            # sleep
             time.sleep(0.005)
-            #print 'tick duration: ' + str(time_delta)
-            #print time_start
-            #print time_end
+            # print information
+            self._print_average_tick_times()
             print '{}:{}:{}'.format(self.time_on_display['h'],self.time_on_display['m'],self.time_on_display['s'])
             print '-------------------------'
         self._shutdown()
         print 'clock shutdown'
-            
+        
+    def _store_tick_time(self,tick_time):
+        self._tick_times.append(tick_time)
+    
+    def _clear_tick_times(self):
+        self._tick_times = list()
+        
+    def _get_tick_times(self):
+        print self._tick_times
+        
+    def _print_average_tick_times(self):
+        print 'average tick time: {}'.format(sum(self._tick_times)/len(self._tick_times))
 
     # clear all pixel data without showing
     def clear_pixel_buffer(self):
