@@ -109,16 +109,25 @@ class RingClockWork():
         pass
 
     # creates a hand depending on type
-    def _create_hand(self,pixel,hand_type,delay=0):
+    def _create_hand(self,time,hand_type,delay=0):
         if hand_type is 'seconds':
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel,'seconds',delay))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',time,'seconds',delay))
         elif hand_type is 'minutes':
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel,'minutes',delay))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',time,'minutes',delay))
         elif hand_type is 'hours':
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',pixel+self._RING_OUT+self._RING_MID,'hours',delay))
-            self.animation_list.append(rca.RingClockAnimations('fade_exp',(pixel*2)+self._RING_OUT,'hours',delay))
+            # calculate position with respect to ring position, becasue ring positions 0 are not aligned
+            if (time==12) or (time==0):
+                position_mid = self._RING_OUT+self._RING_MID-1
+                position_in  = self._RING_OUT+self._RING_MID+self._RING_IN-1
+            else:
+                position_mid = (time*2)+self._RING_OUT-1
+                position_in  = time+self._RING_OUT+self._RING_MID-1
+            # create hand
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',position_in,'hours',delay))
+            self.animation_list.append(rca.RingClockAnimations('fade_exp',position_mid,'hours',delay))
             if self._clock_mode is 'FILL':
-                self.animation_list.append(rca.RingClockAnimations('fade_exp',(pixel*2)+self._RING_OUT-1,'hours',delay))
+                position_mid = (time*2)+self._RING_OUT
+                self.animation_list.append(rca.RingClockAnimations('fade_exp',position_mid,'hours',delay))
         else:
             raise ValueError('unknown hand')
             
