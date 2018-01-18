@@ -19,7 +19,7 @@ class RingClockWork():
         # init last displayed second
         self._last_second = 0
         #init clock mode (CLASSIC/FILL)
-        self._clock_mode = 'FILL'
+        self._clock_mode = 'CLASSIC'
         # init LEDs
         self.led = led
         # store static time
